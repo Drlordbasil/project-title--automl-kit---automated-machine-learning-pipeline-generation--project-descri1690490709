@@ -1,0 +1,14 @@
+The package requirements for this Python program are as follows:
+
+- pandas: for data manipulation and analysis
+- scikit-learn: for machine learning algorithms, data preprocessing, feature selection, model evaluation, and hyperparameter optimization
+- joblib: for saving and loading the trained model
+- multiprocessing: for parallel processing (used in the program to speed up the grid search)
+
+You can install these packages using pip by executing the following command:
+
+```
+pip install pandas scikit-learn joblib
+```
+
+Note: The program assumes that the required packages are installed and importable.
