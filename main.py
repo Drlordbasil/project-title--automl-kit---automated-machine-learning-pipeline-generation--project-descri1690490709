@@ -18,6 +18,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.externals import joblib
 import multiprocessing
 
+
 class AutoMLKit:
     def __init__(self):
         self.data = None
@@ -39,13 +40,14 @@ class AutoMLKit:
         y = self.data['target']
 
         # Train-test split
-        self.train_data, self.test_data, self.train_target, self.test_target = train_test_split(X, y, test_size=0.2, random_state=42)
-        
+        self.train_data, self.test_data, self.train_target, self.test_target = train_test_split(
+            X, y, test_size=0.2, random_state=42)
+
         # Data Cleaning
         imputer = Imputer(strategy='mean')
         self.train_data = imputer.fit_transform(self.train_data)
         self.test_data = imputer.transform(self.test_data)
-        
+
         # Feature Engineering and Selection
         encoder = OneHotEncoder()
         scaler = StandardScaler()
@@ -53,7 +55,8 @@ class AutoMLKit:
 
         encoded_data = encoder.fit_transform(self.train_data)
         scaled_data = scaler.fit_transform(encoded_data.toarray())
-        self.train_data = selector.fit_transform(scaled_data, self.train_target)
+        self.train_data = selector.fit_transform(
+            scaled_data, self.train_target)
 
         encoded_data = encoder.transform(self.test_data)
         scaled_data = scaler.transform(encoded_data.toarray())
@@ -109,6 +112,7 @@ class AutoMLKit:
 
         return predict
 
+
 # Example usage
 automl = AutoMLKit()
 automl.load_data("data.csv")
@@ -122,4 +126,3 @@ sample_data = pd.DataFrame()  # Add sample data for prediction
 prediction_func = automl.deploy_model(automl.features)
 prediction = prediction_func(sample_data)
 print("Prediction:", prediction)
-
