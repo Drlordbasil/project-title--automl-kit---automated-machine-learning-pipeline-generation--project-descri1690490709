@@ -1,22 +1,12 @@
-'''
-AutoML Kit - Automated Machine Learning Pipeline Generation
-
-This Python program demonstrates the implementation of AutoML Kit, an open-source library that automates the process of building and deploying machine learning pipelines.
-
-The AutoML Kit library leverages various machine learning algorithms and data preprocessing techniques to automate tasks such as data cleaning, preprocessing, feature engineering, algorithm selection, and hyperparameter optimization.
-
-'''
-
-# Importing required libraries
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import Imputer, OneHotEncoder, StandardScaler
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.feature_selection import SelectKBest, f_classif
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from sklearn.model_selection import GridSearchCV
-from sklearn.externals import joblib
-import multiprocessing
+import pickle
 
 
 class AutoMLKit:
@@ -44,14 +34,14 @@ class AutoMLKit:
             X, y, test_size=0.2, random_state=42)
 
         # Data Cleaning
-        imputer = Imputer(strategy='mean')
+        imputer = SimpleImputer(strategy='mean')
         self.train_data = imputer.fit_transform(self.train_data)
         self.test_data = imputer.transform(self.test_data)
 
         # Feature Engineering and Selection
         encoder = OneHotEncoder()
         scaler = StandardScaler()
-        selector = SelectKBest(f_classif, k=10)
+        selector = SelectKBest(score_func=f_classif, k=10)
 
         encoded_data = encoder.fit_transform(self.train_data)
         scaled_data = scaler.fit_transform(encoded_data.toarray())
@@ -97,11 +87,13 @@ class AutoMLKit:
 
     def save_model(self, model_file):
         # Save the best model
-        joblib.dump(self.best_model, model_file)
+        with open(model_file, 'wb') as f:
+            pickle.dump(self.best_model, f)
 
     def load_model(self, model_file):
         # Load the saved model
-        self.best_model = joblib.load(model_file)
+        with open(model_file, 'rb') as f:
+            self.best_model = pickle.load(f)
 
     def deploy_model(self, features):
         # Model Deployment and Prediction
